@@ -1,0 +1,72 @@
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+xmlns:android="http://schemas.android.com/apk/res/android"
+id="com.suarez.cordova.mapsforge"
+    version="0.1">
+
+    <name>Mapsforge Plugin</name>
+    <description>Cordova Mapsforge Plugin</description>
+    <license>MIT</license>
+    <keywords>cordova,mapsforge</keywords>
+    
+    <js-module src="www/mapsforge.js" name="mapsforge_plugin">
+        <clobbers target="mapsforge.plugin" />
+    </js-module>
+    
+    <js-module src="www/mapsforgeNative.js" name="mapsforge_native">
+        <clobbers target="mapsforge.embedded" />
+    </js-module>
+    
+    <js-module src="www/mapsforgeOfflineCache.js" name="mapsforge_cache">
+        <clobbers target="mapsforge.cache" />
+    </js-module>
+    
+    <!-- amazon-fireos -->
+    <platform name="amazon-fireos">
+	    <config-file target="config.xml" parent="/*">
+	        <feature name="MapsforgePlugin">
+	            <param name="android-package" value="com.suarez.cordova.mapsforge.MapsforgePlugin"/>
+	        </feature>
+	    </config-file>
+	    
+	    <source-file src="src/android/MapsforgePlugin.java" target-dir="src/com/suarez/cordova/mapsforge" />
+        <source-file src="src/android/MapsforgeCache.java" target-dir="src/com/suarez/cordova/mapsforge" />
+        <source-file src="src/android/MapsforgeNative.java" target-dir="src/com/suarez/cordova/mapsforge" />
+        
+        <source-file src="src/android/libs/mapsforge-core-0.4.0.jar" target-dir="libs" />
+        <source-file src="src/android/libs/mapsforge-map-0.4.0.jar" target-dir="libs" />
+        <source-file src="src/android/libs/mapsforge-map-android-0.4.0.jar" target-dir="libs" />
+        <source-file src="src/android/libs/mapsforge-map-reader-0.4.0.jar" target-dir="libs" />
+        <source-file src="src/android/libs/svg-android-0.4.0.jar" target-dir="libs" />
+        
+        <asset src="src/android/assets/patterns" target="../patterns" />
+        <asset src="src/android/assets/renderthemes" target="../renderthemes" />
+        <asset src="src/android/assets/symbols" target="../symbols" />
+        
+        <asset src="src/android/res/drawable" target="../../res/drawable" />
+	</platform>
+    
+    <!-- android -->
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="MapsforgePlugin" >
+                <param name="android-package" value="com.suarez.cordova.mapsforge.MapsforgePlugin"/>
+            </feature>
+        </config-file>
+        
+        <source-file src="src/android/MapsforgePlugin.java" target-dir="src/com/suarez/cordova/mapsforge" />
+        <source-file src="src/android/MapsforgeCache.java" target-dir="src/com/suarez/cordova/mapsforge" />
+        <source-file src="src/android/MapsforgeNative.java" target-dir="src/com/suarez/cordova/mapsforge" />
+        
+        <source-file src="src/android/libs/mapsforge-core-0.4.0.jar" target-dir="libs" />
+        <source-file src="src/android/libs/mapsforge-map-0.4.0.jar" target-dir="libs" />
+        <source-file src="src/android/libs/mapsforge-map-android-0.4.0.jar" target-dir="libs" />
+        <source-file src="src/android/libs/mapsforge-map-reader-0.4.0.jar" target-dir="libs" />
+        <source-file src="src/android/libs/svg-android-0.4.0.jar" target-dir="libs" />
+        
+        <asset src="src/android/assets/patterns" target="../patterns" />
+        <asset src="src/android/assets/renderthemes" target="../renderthemes" />
+        <asset src="src/android/assets/symbols" target="../symbols" />
+        
+        <asset src="src/android/res/drawable" target="../../res/drawable" />
+     </platform>
+</plugin>
