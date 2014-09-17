@@ -66,7 +66,6 @@ public class MapsforgeNative {
 	
 	private boolean destroyCache;
 	private int width, height;
-	private boolean matchParent = false;
 	private boolean online;
 	private SparseArray<Layer> layersOnMap;
 	
@@ -194,12 +193,7 @@ public class MapsforgeNative {
 		// only once a layer is associated with a mapView the rendering starts
 		layers.add(tileRendererLayer);
 		
-		RelativeLayout.LayoutParams params = null;
-		if(matchParent){
-			params = new RelativeLayout.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.MATCH_PARENT);
-		}else{
-			params = new RelativeLayout.LayoutParams(width, height);
-		}
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, height);
 		
 		context.addContentView(mapView, params);
 	}
