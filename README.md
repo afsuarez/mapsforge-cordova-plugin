@@ -1,7 +1,17 @@
 mapsforge-cordova-plugin
 ========================
 
-Plugin for Apache Cordova (aka Phonegap) that wraps the mapsforge libraries(v 0.4).
+Plugin for Apache Cordova (aka Phonegap) that wraps the [mapsforge](http://www.mapsforge.org) libraries(v 0.4).
+
+Index
+=====
+
+1. [Overview](#overview)
+2. [Installation](#installation)
+3. [Mapsforge native](#mapsforge-native)
+4. [Mapsforge offline tile layer](#mapsforge-offline-tile-layer)
+5. [Contribute](#contribute)
+6. [License](#license)
 
 Overview
 ========
@@ -83,7 +93,7 @@ In order to use this mode, you will have to use the ``mapsforge.cache`` object. 
 + ``initialize(String mapFilePath, {onSuccess, onError}*)``: You should call this method before any other one, and provide it with the absolute map file path.
 + ``getTile([double lat, double lng, byte zoom], {onSuccess, onError}*)``: This method is the one that provides the tiles, generating them if their are not in the cache. Despite the ``onSuccess`` function is optional, you should provide a valid function since this method will return the tile's path to your ``onSuccess`` function.
 
-As an example, a leaflet code will be provided below:
+As an example, a [Leaflet](http://www.leafletjs.com) code will be provided below:
 ```
 var map = L.map('map-div');
 	
@@ -124,3 +134,11 @@ L.offlineTileLayer({
 		
 map.setView([43.360594,-5.849361],18);
 ```
+
+Contribute
+==========
+Feel free to contribute, add issues about bringing more features to the plugin, detecting bugs...
+
+License
+=======
+MIT license ;)
