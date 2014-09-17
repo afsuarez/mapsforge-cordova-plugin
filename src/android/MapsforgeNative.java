@@ -395,7 +395,11 @@ public class MapsforgeNative {
 					this.renderThemePath = renderThemePath;
 					this.renderTheme = new ExternalRenderTheme(newTheme);
 				}else{
-					Log.e(MapsforgePlugin.TAG, "Render theme doesn't exist.");
+					this.renderThemePath = this.context.getFilesDir()+"/mapthemes/assets.xml";
+					newTheme = new File(renderThemePath);
+					this.renderTheme = new ExternalRenderTheme(newTheme);
+					
+					Log.e(MapsforgePlugin.TAG, "Render theme doesn't exist. Default theme applied.");
 				}
 			} catch (FileNotFoundException e) {
 				Log.e(MapsforgePlugin.TAG, e.getMessage());
