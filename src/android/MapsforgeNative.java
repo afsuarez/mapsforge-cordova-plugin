@@ -84,12 +84,8 @@ public class MapsforgeNative {
 		
 		destroyCache = true;
 		
-		if(width == 0 || height == 0){
-			matchParent = true;
-		}else{
-			this.width = width;
-			this.height = height;
-		}
+		this.width = (width <= 0)?WindowManager.LayoutParams.MATCH_PARENT:width;
+		this.height = (height <= 0)?WindowManager.LayoutParams.MATCH_PARENT:height;
 		
 		layersOnMap = new SparseArray<Layer>();
 		layerCounter = 0;
@@ -395,6 +391,7 @@ public class MapsforgeNative {
 					this.renderThemePath = renderThemePath;
 					this.renderTheme = new ExternalRenderTheme(newTheme);
 				}else{
+					prepareMapThemes();
 					this.renderThemePath = this.context.getFilesDir()+"/mapthemes/assets.xml";
 					newTheme = new File(renderThemePath);
 					this.renderTheme = new ExternalRenderTheme(newTheme);
