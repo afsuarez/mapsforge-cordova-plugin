@@ -19,9 +19,6 @@
 
 package com.suarez.cordova.mapsforge;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
@@ -104,24 +101,23 @@ static final String TAG = "mapsforge-cordova-plugin";
 				callbackContext.success(key);
 				return true;
 			} else if ("native-polyline".equals(action)) {
-				List<Double> points = new ArrayList<Double>();
+				JSONArray points;
 				int color, strokeWidth;
 
 				try {
 					color = args.getInt(0);
 					strokeWidth = args.getInt(1);
+					points = args.getJSONArray(2);
 					
-					for(int i=2;i<args.length();i++){
-						points.add(args.getDouble(i));
-					}
+					if(points.length()%2!=0) throw new JSONException("Invalid array of coordinates. Length should be multiple of 2");
+					
+					int key = MapsforgeNative.INSTANCE.addPolyline(color, strokeWidth, points);
+					callbackContext.success(key);
+					return true;
 				}catch(JSONException je){
 					callbackContext.error(je.getMessage());
 					return true;
 				}
-				
-				int key = MapsforgeNative.INSTANCE.addPolyline(color, strokeWidth, points);
-				callbackContext.success(key);
-				return true;
 			} else if ("native-delete-layer".equals(action)) {
 				int key;
 

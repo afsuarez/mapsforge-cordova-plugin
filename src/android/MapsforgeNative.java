@@ -9,6 +9,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.mapsforge.core.graphics.Bitmap;
 import org.mapsforge.core.graphics.Paint;
 import org.mapsforge.core.graphics.Style;
@@ -104,7 +106,7 @@ public class MapsforgeNative {
 		return layerCounter++;
 	}
 
-	public int addPolyline(int color, int strokeWidth, List<Double> points){
+	public int addPolyline(int color, int strokeWidth, JSONArray points) throws JSONException{
 		Paint paint = graphicFactory.createPaint();
         paint.setColor(color);
         paint.setStrokeWidth(strokeWidth);
@@ -113,9 +115,8 @@ public class MapsforgeNative {
         Polyline polyline = new Polyline(paint, graphicFactory);
         List<LatLong> latlongs = polyline.getLatLongs();
         
-        for(int i=0;i<points.size();i+=2){
-        	if((i+1)>=points.size()) break;
-        	latlongs.add(new LatLong(points.get(i), points.get(i+1)));
+        for(int i=0;i<points.length();i+=2){
+        	latlongs.add(new LatLong(points.getDouble(i), points.getDouble(i+1)));
         }
 
         layers.add(polyline);
