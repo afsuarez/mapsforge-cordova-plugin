@@ -79,8 +79,9 @@ Methods
 ```
 mapsforge.embedded.setOnlineTileLayer(['MapQuest', 'otile1.mqcdn.com', '/tiles/1.0.0/map/', 'png', 80]);
 ```
-+ ``addMarker([String marker, double lat, double lng], {onSuccess, onError}*)``: Adds a marker to the map in the specified coordinates and returns the key for that marker to the ``onSuccess`` function. That key is the one you have to use if you want to delete it. The color of the marker should be one of the constants shown at the beginning of this section; if the marker doesn't exist a green marker will be used instead.
-+ ``deleteLayer(int key, {onSuccess, onError}*)``: Deletes the layer with the specified key from the map.
++ ``addMarker([String marker_color, double lat, double lng], {onSuccess, onError}*)``: Adds a marker to the map in the specified coordinates and returns the key for that marker to the ``onSuccess`` function. That key is the one you have to use if you want to delete it. The color of the marker should be one of the constants shown at the beginning of this section; if the marker doesn't exist a green marker will be used instead.
++ ``addPolyline([int color, int strokeWidth,[double points]], {onSuccess, onError}*)``: Adds a polyline to the map and returns the key generated for it. The color can be one of the constants specified before, or the new color you want. This function will use the odd positions of the array of points for the latitudes and the even positions for the longitudes. Example: ``[lat1, lng1, lat2, lng2, lat3, lng3]``. If the length of the array is not even, the function will throw an exception and return the error message to the ``onError`` function.
++ ``deleteLayer(int key, {onSuccess, onError}*)``: Deletes the layer(markers or polylines) with the specified key from the map.
 
 Mapsforge offline tile layer
 ============================
