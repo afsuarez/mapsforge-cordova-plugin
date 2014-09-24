@@ -4,7 +4,7 @@ id="com.suarez.cordova.mapsforge"
     version="0.1">
 
     <name>Mapsforge Plugin</name>
-    <description>Cordova Mapsforge Plugin</description>
+    <description>Cordova plugin that allows you to use mapsforge as an offline renderer to use with other libraries(like Leaflet), or to use it directly in your device in a native way(offline and online modes available).</description>
     <license>MIT</license>
     <keywords>cordova,mapsforge</keywords>
     
