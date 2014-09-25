@@ -13,6 +13,7 @@ Index
 5. [Examples](#examples)
 6. [Contribute](#contribute)
 7. [License](#license)
+8. [Javadoc](http://afsuarez.github.io/mapsforge-cordova-plugin/doc/)
 
 Overview
 ========
