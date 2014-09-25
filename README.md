@@ -10,8 +10,9 @@ Index
 2. [Installation](#installation)
 3. [Mapsforge native](#mapsforge-native)
 4. [Mapsforge offline tile layer](#mapsforge-offline-tile-layer)
-5. [Contribute](#contribute)
-6. [License](#license)
+5. [Examples](#examples)
+6. [Contribute](#contribute)
+7. [License](#license)
 
 Overview
 ========
@@ -82,6 +83,9 @@ mapsforge.embedded.setOnlineTileLayer(['MapQuest', 'otile1.mqcdn.com', '/tiles/1
 + ``addMarker([String marker_color, double lat, double lng], {onSuccess, onError}*)``: Adds a marker to the map in the specified coordinates and returns the key for that marker to the ``onSuccess`` function. That key is the one you have to use if you want to delete it. The color of the marker should be one of the constants shown at the beginning of this section; if the marker doesn't exist a green marker will be used instead.
 + ``addPolyline([int color, int strokeWidth,[double points]], {onSuccess, onError}*)``: Adds a polyline to the map and returns the key generated for it. The color can be one of the constants specified before, or the new color you want. This function will use the odd positions of the array of points for the latitudes and the even positions for the longitudes. Example: ``[lat1, lng1, lat2, lng2, lat3, lng3]``. If the length of the array is not even, the function will throw an exception and return the error message to the ``onError`` function.
 + ``deleteLayer(int key, {onSuccess, onError}*)``: Deletes the layer(markers or polylines) with the specified key from the map.
++ ``onStart({onSuccess, onError}*)``: Initializes again the map if the ``onStop`` method was called.
++ ``onStop({onSuccess, onError}*)``: Stops the rendering. Useful for when the app goes to the background. You have to call the ``onStart`` method to restart it.
++ ``onDestroy({onSuccess, onError}*)``: Stops and cleans the resources that have been used.
 
 Mapsforge offline tile layer
 ============================
@@ -93,6 +97,15 @@ In order to use this mode, you will have to use the ``mapsforge.cache`` object. 
 
 + ``initialize(String mapFilePath, {onSuccess, onError}*)``: You should call this method before any other one, and provide it with the absolute map file path.
 + ``getTile([double lat, double lng, byte zoom], {onSuccess, onError}*)``: This method is the one that provides the tiles, generating them if their are not in the cache. Despite the ``onSuccess`` function is optional, you should provide a valid function since this method will return the tile's path to your ``onSuccess`` function.
++ ``setCacheEnabled(boolean enabled, {onSuccess, onError}*)``: Enables or disables the cache. If disabled, the plugin will generate the tiles always from scratch. Cache is enabled by default.
++ ``setExternalCache(boolean external, {onSuccess, onError}*)``: Sets whether or not the cache should be placed in the internal memory or in the SD card. By default it is placed in SD card, so devices with not too much memory have a better performance.
++ ``setMapFile(String absolutePath, {onSuccess, onError}*)``: Sets the map file to be used for rendering to the map specified by its absolute path.
++ ``setMaxCacheAge(long milliseconds, {onSuccess, onError}*)``: Sets the age for the generated images. This means that when the cache is being cleaned, all images younger than the specified value will be kept in the cache in order to avoid deleting images that are being used at the moment.
++ ``setMaxCacheSize(int sizeInMB, {onSuccess, onError}*)``: Sets the maximum size for the cache. This size must be specified in megabytes. If there is not that space available, the cache will fit the maximum size.
++ ``setTileSize(int size, {onSuccess, onError}*)``: Sets the tile size. By default the tile size is set to 256.
++ ``setCacheCleaningTrigger(int sizeInMB, {onSuccess, onError}*)``: This method sets the size in megabytes that will remain always available in memory in order to avoid that the application uses all space available.
++ ``destroyCacheOnExit(boolean destroy, {onSuccess, onError}*)``: Sets a flag to destroy the cache when the ``onDestroy`` method is called.
++ ``onDestroy({onSuccess, onError}*)``: Deletes the cache depending on the flag state.
 
 As an example, a [Leaflet](http://www.leafletjs.com) code will be provided below:
 ```
@@ -134,6 +147,41 @@ L.offlineTileLayer({
 }).addTo(map);
 		
 map.setView([43.360594,-5.849361],18);
+```
+
+Examples
+========
+Mapsforge Native
+----------------
+```
+mapsforge.embedded.initialize(["/mnt/sdcard/spain.map",0,0]); //Creates the view
+mapsforge.embedded.setCenter(43.360056,-5.845757); //Sets the center of the view
+mapsforge.embedded.setMaxZoom(18);
+mapsforge.embedded.setZoom(15);
+
+//Adding a marker
+mapsforge.embedded.addMarker([mapsforge.embedded.MARKER_YELLOW,43.360056,-5.845757]);
+
+//Adding a polyline
+var points = [43.360056,-5.845757, 43.160056,-5.645757,43.560056,-5.895757];
+mapsforge.embedded.addPolyline([mapsforge.embedded.COLOR_GREEN,10,points],{onError: function(e){alert(e);}});
+```
+Mapsforge tile layer
+--------------------
+As it could be seen with the Leaflet code previously, this mode allows you to use offline maps with other libraries. Despite of that, you have to initialize the renderer before inserting the Leaflet code.
+
+```
+mapsforge.cache.initialize("/mnt/sdcard/spain.map"); //Initializes the renderer with the offline map
+
+/*Now you can use the Leaflet code seen before*/
+
+mapsforge.cache.setExternalCache(false); //Sets the cache to internal for faster performance
+
+//Now we set the cache size to 50 MB. This will increase the time between cleanings, but 
+//it will also make those cleanings slower, since there are a lot more of images to 
+//delete...so be careful when you choose the cache size
+mapsforge.cache.setMaxCacheSize(50);
+
 ```
 
 Contribute
