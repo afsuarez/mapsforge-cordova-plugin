@@ -160,11 +160,13 @@ mapsforge.embedded.setMaxZoom(18);
 mapsforge.embedded.setZoom(15);
 
 //Adding a marker
-mapsforge.embedded.addMarker([mapsforge.embedded.MARKER_YELLOW,43.360056,-5.845757]);
+var makerKey;
+mapsforge.embedded.addMarker([mapsforge.embedded.MARKER_YELLOW,43.360056,-5.845757],{onSuccess: function(key){markerKey = key;}});
 
 //Adding a polyline
 var points = [43.360056,-5.845757, 43.160056,-5.645757,43.560056,-5.895757];
-mapsforge.embedded.addPolyline([mapsforge.embedded.COLOR_GREEN,10,points],{onError: function(e){alert(e);}});
+var polylineKey;
+mapsforge.embedded.addPolyline([mapsforge.embedded.COLOR_GREEN,10,points],{onSuccess: function(key){polylineKey = key;}, onError: function(e){alert(e);}});
 ```
 Mapsforge tile layer
 --------------------
