@@ -18,6 +18,9 @@
  */
 package com.suarez.cordova.mapsforge;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
@@ -41,43 +44,44 @@ public class MapsforgePlugin extends CordovaPlugin {
 			return true;
 		} else if (action.contains("native-")) {
 			if ("native-set-center".equals(action)) {
-
 				try {
 					MapsforgeNative.INSTANCE.setCenter(args.getDouble(0),
 							args.getDouble(1));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
 			} else if ("native-set-zoom".equals(action)) {
-
 				try {
 					MapsforgeNative.INSTANCE.setZoom(Byte.parseByte(args
 							.getString(0)));
 					callbackContext.success();
 				} catch (NumberFormatException nfe) {
-					Log.e(MapsforgePlugin.TAG, nfe.getMessage());
 					callbackContext
 							.error("Incorrect argument format. Should be: (byte zoom)");
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
 			} else if ("native-show".equals(action)) {
-				MapsforgeNative.INSTANCE.show();
-				callbackContext.success();
+				try {
+					MapsforgeNative.INSTANCE.show();
+					callbackContext.success();
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
+				}
 				return true;
 			} else if ("native-hide".equals(action)) {
 				MapsforgeNative.INSTANCE.hide();
-				callbackContext.success();
 				return true;
 			} else if ("native-marker".equals(action)) {
-
 				try {
 					Activity context = this.cordova.getActivity();
 
@@ -92,11 +96,13 @@ public class MapsforgePlugin extends CordovaPlugin {
 								context.getPackageName());
 					}
 
-					callbackContext.success(MapsforgeNative.INSTANCE.addMarker(
-							markerId, args.getDouble(1), args.getDouble(2)));
+					int markerKey = MapsforgeNative.INSTANCE.addMarker(
+							markerId, args.getDouble(1), args.getDouble(2));
+					callbackContext.success(markerKey);
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -109,12 +115,14 @@ public class MapsforgePlugin extends CordovaPlugin {
 						throw new JSONException(
 								"Invalid array of coordinates. Length should be multiple of 2");
 
-					callbackContext
-							.success(MapsforgeNative.INSTANCE.addPolyline(
-									args.getInt(0), args.getInt(1), points));
+					int polylineKey = MapsforgeNative.INSTANCE.addPolyline(
+							args.getInt(0), args.getInt(1), points);
+
+					callbackContext.success(polylineKey);
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -124,20 +132,27 @@ public class MapsforgePlugin extends CordovaPlugin {
 					MapsforgeNative.INSTANCE.deleteLayer(args.getInt(0));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
 			} else if ("native-initialize".equals(action)) {
 
 				try {
+
 					MapsforgeNative.createInstance(this.cordova.getActivity(),
 							args.getString(0), args.getInt(1), args.getInt(2));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (IllegalArgumentException e) {
+					callbackContext.error(e.getMessage());
+				} catch (IOException e) {
+					callbackContext.error(e.getMessage());
+				} catch(Exception e){
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -148,12 +163,12 @@ public class MapsforgePlugin extends CordovaPlugin {
 							.getString(0)));
 					callbackContext.success();
 				} catch (NumberFormatException nfe) {
-					Log.e(MapsforgePlugin.TAG, nfe.getMessage());
 					callbackContext
 							.error("Incorrect argument format. Should be: (byte zoom)");
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -164,12 +179,12 @@ public class MapsforgePlugin extends CordovaPlugin {
 							.getString(0)));
 					callbackContext.success();
 				} catch (NumberFormatException nfe) {
-					Log.e(MapsforgePlugin.TAG, nfe.getMessage());
 					callbackContext
 							.error("Incorrect argument format. Should be: (byte zoom)");
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -180,8 +195,9 @@ public class MapsforgePlugin extends CordovaPlugin {
 							.getBoolean(0));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -191,8 +207,9 @@ public class MapsforgePlugin extends CordovaPlugin {
 					MapsforgeNative.INSTANCE.setClickable(args.getBoolean(0));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -202,8 +219,9 @@ public class MapsforgePlugin extends CordovaPlugin {
 					MapsforgeNative.INSTANCE.showScaleBar(args.getBoolean(0));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -213,7 +231,6 @@ public class MapsforgePlugin extends CordovaPlugin {
 					MapsforgeNative.INSTANCE.destroyCache(args.getBoolean(0));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
 				}
 
@@ -224,8 +241,11 @@ public class MapsforgePlugin extends CordovaPlugin {
 					MapsforgeNative.INSTANCE.setMapFilePath(args.getString(0));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (IllegalArgumentException iae) {
+					callbackContext.error(iae.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -235,8 +255,9 @@ public class MapsforgePlugin extends CordovaPlugin {
 					MapsforgeNative.INSTANCE.setCacheName(args.getString(0));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -247,22 +268,42 @@ public class MapsforgePlugin extends CordovaPlugin {
 							.getString(0));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (IllegalArgumentException e) {
+					callbackContext.error(e.getMessage());
+				} catch (IOException e) {
+					callbackContext.error(e.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
 			} else if ("native-stop".equals(action)) {
-				MapsforgeNative.INSTANCE.onStop();
-				callbackContext.success();
+				try {
+					MapsforgeNative.INSTANCE.onStop();
+					callbackContext.success();
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
+				}
+
 				return true;
 			} else if ("native-start".equals(action)) {
-				MapsforgeNative.INSTANCE.onStart();
-				callbackContext.success();
+				try {
+					MapsforgeNative.INSTANCE.onStart();
+					callbackContext.success();
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
+				}
+
 				return true;
 			} else if ("native-destroy".equals(action)) {
-				MapsforgeNative.INSTANCE.onDestroy();
-				callbackContext.success();
+				try {
+					MapsforgeNative.INSTANCE.onDestroy();
+					callbackContext.success();
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
+				}
+
 				return true;
 			} else if ("native-online".equals(action)) {
 
@@ -272,8 +313,9 @@ public class MapsforgePlugin extends CordovaPlugin {
 							args.getString(3), args.getInt(4));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -284,8 +326,13 @@ public class MapsforgePlugin extends CordovaPlugin {
 							args.getString(1));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (IllegalArgumentException e) {
+					callbackContext.error(e.getMessage());
+				} catch (IOException e) {
+					callbackContext.error(e.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -294,38 +341,76 @@ public class MapsforgePlugin extends CordovaPlugin {
 			if ("cache-get-tile".equals(action)) {
 
 				try {
-					callbackContext.success(MapsforgeCache.INSTANCE
-							.getTilePath(args.getLong(0), args.getLong(1),
-									Byte.parseByte(args.getString(2))));
+					final long x = args.getLong(0);
+					final long y = args.getLong(1);
+					final byte z = Byte.parseByte(args.getString(2));
+					final CallbackContext callbacks = callbackContext;
+
+					cordova.getThreadPool().execute(new Runnable() {
+						public void run() {
+							try {
+								String path = MapsforgeCache.INSTANCE
+										.getTilePath(x, y, z);
+								callbacks.success(path);
+							} catch (IOException e) {
+								callbacks.error(e.getMessage());
+							} catch (Exception e) {
+								callbacks.error(e.getMessage());
+							}
+						}
+					});
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
 				} catch (NumberFormatException nfe) {
-					Log.e(MapsforgePlugin.TAG, nfe.getMessage());
 					callbackContext.error(nfe.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
 			} else if ("cache-initialize".equals(action)) {
 
 				try {
-					MapsforgeCache.createInstance(this.cordova.getActivity(),
+					MapsforgeCache.createInstance(cordova.getActivity(),
 							args.getString(0));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (IllegalArgumentException e) {
+					callbackContext.error(e.getMessage());
+				} catch (IOException e) {
+					callbackContext.error(e.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
 			} else if ("cache-map-path".equals(action)) {
 
 				try {
-					MapsforgeCache.INSTANCE.setMapFilePath(args.getString(0));
-					callbackContext.success();
+					final String mapFile = args.getString(0);
+					final CallbackContext callbacks = callbackContext;
+
+					cordova.getThreadPool().execute(new Runnable() {
+
+						@Override
+						public void run() {
+							try {
+								MapsforgeCache.INSTANCE.setMapFilePath(mapFile);
+								callbacks.success();
+							} catch (IllegalArgumentException e) {
+								callbacks.error(e.getMessage());
+							} catch (FileNotFoundException e) {
+								callbacks.error(e.getMessage());
+							} catch (Exception e) {
+								callbacks.error(e.getMessage());
+							}
+						}
+					});
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -335,8 +420,9 @@ public class MapsforgePlugin extends CordovaPlugin {
 					MapsforgeCache.INSTANCE.setMaxCacheSize(args.getInt(0));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -346,8 +432,9 @@ public class MapsforgePlugin extends CordovaPlugin {
 					MapsforgeCache.INSTANCE.setMaxCacheAge(args.getLong(0));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -358,8 +445,9 @@ public class MapsforgePlugin extends CordovaPlugin {
 							.setCleanCacheTrigger(args.getInt(0));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -369,8 +457,9 @@ public class MapsforgePlugin extends CordovaPlugin {
 					MapsforgeCache.INSTANCE.setCacheEnabled(args.getBoolean(0));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -381,8 +470,9 @@ public class MapsforgePlugin extends CordovaPlugin {
 							.setExternalCache(args.getBoolean(0));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -392,8 +482,9 @@ public class MapsforgePlugin extends CordovaPlugin {
 					MapsforgeCache.INSTANCE.setCacheName(args.getString(0));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -403,8 +494,9 @@ public class MapsforgePlugin extends CordovaPlugin {
 					MapsforgeCache.INSTANCE.setTileSize(args.getInt(0));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -415,19 +507,39 @@ public class MapsforgePlugin extends CordovaPlugin {
 							.getBoolean(0));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
 			} else if ("cache-theme-path".equals(action)) {
 
 				try {
-					MapsforgeCache.INSTANCE.setRenderTheme(args.getString(0));
-					callbackContext.success();
+					final CallbackContext callbacks = callbackContext;
+					final String themePath = args.getString(0);
+
+					cordova.getThreadPool().execute(new Runnable() {
+
+						@Override
+						public void run() {
+							try {
+								MapsforgeCache.INSTANCE
+										.setRenderTheme(themePath);
+								callbacks.success();
+							} catch (IllegalArgumentException e) {
+								callbacks.error(e.getMessage());
+							} catch (FileNotFoundException e) {
+								callbacks.error(e.getMessage());
+							} catch (Exception e) {
+								callbacks.error(e.getMessage());
+							}
+						}
+					});
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -438,11 +550,11 @@ public class MapsforgePlugin extends CordovaPlugin {
 							.parseFloat(args.getString(0)));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
 				} catch (NumberFormatException nfe) {
-					Log.e(MapsforgePlugin.TAG, nfe.getMessage());
 					callbackContext.error(nfe.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
@@ -453,18 +565,22 @@ public class MapsforgePlugin extends CordovaPlugin {
 							.parseFloat(args.getString(0)));
 					callbackContext.success();
 				} catch (JSONException je) {
-					Log.e(MapsforgePlugin.TAG, je.getMessage());
 					callbackContext.error(je.getMessage());
 				} catch (NumberFormatException nfe) {
-					Log.e(MapsforgePlugin.TAG, nfe.getMessage());
 					callbackContext.error(nfe.getMessage());
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
 				}
 
 				return true;
 			} else if ("cache-destroy".equals(action)) {
+				try {
+					MapsforgeCache.INSTANCE.onDestroy();
+					callbackContext.success();
+				} catch (Exception e) {
+					callbackContext.error(e.getMessage());
+				}
 
-				MapsforgeCache.INSTANCE.onDestroy();
-				callbackContext.success();
 				return true;
 			}
 		}
@@ -476,10 +592,15 @@ public class MapsforgePlugin extends CordovaPlugin {
 	 * <i>INFO</i> level
 	 */
 	public void status() {
-		String cacheCreated = (MapsforgeCache.INSTANCE == null) ? "FALSE" : "TRUE";
-		String nativeCreated = (MapsforgeNative.INSTANCE == null) ? "FALSE" : "TRUE";
+		String cacheCreated = (MapsforgeCache.INSTANCE == null) ? "FALSE"
+				: "TRUE";
+		String nativeCreated = (MapsforgeNative.INSTANCE == null) ? "FALSE"
+				: "TRUE";
 
-		Log.i(MapsforgePlugin.TAG, "[Status][1/2]: Mapsforge cache initialized..." + cacheCreated);
-		Log.i(MapsforgePlugin.TAG, "[Status][2/2]: Mapsforge native initialized..." + nativeCreated);
+		Log.i(MapsforgePlugin.TAG,
+				"[Status][1/2]: Mapsforge cache initialized..." + cacheCreated);
+		Log.i(MapsforgePlugin.TAG,
+				"[Status][2/2]: Mapsforge native initialized..."
+						+ nativeCreated);
 	}
 }

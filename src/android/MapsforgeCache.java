@@ -6,8 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.mapsforge.core.graphics.TileBitmap;
 import org.mapsforge.core.model.Tile;
@@ -21,7 +19,6 @@ import org.mapsforge.map.rendertheme.XmlRenderTheme;
 
 import android.app.Activity;
 import android.content.res.AssetManager;
-import android.util.Log;
 
 /**
  * This class creates a tile cache using mapsforge libraries. When a tile is not
@@ -48,8 +45,11 @@ public class MapsforgeCache {
 	 *            the <code>cordova</code> object.
 	 * @param mapFilePath
 	 *            Absolute path to the map file.
+	 * @throws IllegalArgumentException
+	 * @throws IOException
 	 */
-	public static void createInstance(Activity context, String mapFilePath) {
+	public static void createInstance(Activity context, String mapFilePath)
+			throws IllegalArgumentException, IOException {
 		INSTANCE = new MapsforgeCache(context, mapFilePath);
 	}
 
@@ -122,8 +122,11 @@ public class MapsforgeCache {
 	 *            <code><i>this.cordova.getActivity()</i></code>)
 	 * @param mapFilePath
 	 *            Absolute path to the map file
+	 * @throws IllegalArgumentException
+	 * @throws IOException
 	 */
-	private MapsforgeCache(Activity context, String mapFilePath) {
+	private MapsforgeCache(Activity context, String mapFilePath)
+			throws IllegalArgumentException, IOException {
 		// Context
 		setContext(context);
 		// Graphic factory
@@ -146,12 +149,8 @@ public class MapsforgeCache {
 		createCacheDirectory();
 		prepareMapThemes();
 
-		try {
-			renderTheme = new ExternalRenderTheme(new File(
-					this.context.getFilesDir(), "/mapthemes/assets.xml"));
-		} catch (FileNotFoundException e) {
-			Log.e(MapsforgePlugin.TAG, e.getMessage());
-		}
+		renderTheme = new ExternalRenderTheme(new File(
+				this.context.getFilesDir(), "/renderthemes/assets.xml"));
 
 		this.tmpDir = new File(this.context.getCacheDir(), "/tmp");
 		this.tmpDir.mkdirs();
@@ -177,8 +176,6 @@ public class MapsforgeCache {
 
 	// Checks the cache size and if it is necessary to clean it up
 	private void checkCacheSize() {
-		Log.d(MapsforgePlugin.TAG, "Current cache size (bytes): "
-				+ currentCacheSize);
 		if (currentCacheSize >= (maxCacheSize * 1024 * 1024)
 				|| cacheDir.getUsableSpace() <= (cleanCacheTrigger * 1024 * 1024)) {
 			setCacheEnabled(false);
@@ -370,82 +367,72 @@ public class MapsforgeCache {
 	 * @param zoom
 	 *            Zoom
 	 * @return The absolute path to the tile image
+	 * @throws IOException
 	 */
-	public synchronized String getTilePath(long x, long y, byte zoom) {
+	public synchronized String getTilePath(long x, long y, byte zoom)
+			throws IOException {
 		String path = null;
-		try {
-			if (!cacheDir.exists()) {
-				if (externalCache) {
-					checkExternalCache();
-				}
-				createCacheDirectory();
+		if (!cacheDir.exists()) {
+			if (externalCache) {
+				checkExternalCache();
 			}
-			File tileFile = null;
+			createCacheDirectory();
+		}
+		File tileFile = null;
 
-			if (isCacheEnabled()) {
-				tileFile = new File(cacheDir, "/" + zoom + "/" + x + "/" + y
-						+ ".png");
-			}
+		if (isCacheEnabled()) {
+			tileFile = new File(cacheDir, "/" + zoom + "/" + x + "/" + y
+					+ ".png");
+		}
 
-			if (tileFile != null && tileFile.exists()) {
-				path = tileFile.getAbsolutePath();
-				tileFile.setLastModified(System.currentTimeMillis());
-			} else {
-				tileFile = null;
-				tile = new Tile(x, y, zoom);
-				rendererJob = new RendererJob(tile, mapFile, renderTheme,
-						displayModel, 1f, false);
-				bitmap = renderer.executeJob(rendererJob);
+		if (tileFile != null && tileFile.exists()) {
+			path = tileFile.getAbsolutePath();
+			tileFile.setLastModified(System.currentTimeMillis());
+		} else {
+			tileFile = null;
+			tile = new Tile(x, y, zoom);
+			rendererJob = new RendererJob(tile, mapFile, renderTheme,
+					displayModel, 1f, false);
+			bitmap = renderer.executeJob(rendererJob);
 
-				if (bitmap != null) {
-					OutputStream outStream = null;
+			if (bitmap != null) {
+				OutputStream outStream = null;
 
-					try {
-						if (isCacheEnabled()) {
-							new File(cacheDir, "/" + zoom + "/" + x + "/")
-									.mkdirs();
-							tileFile = new File(cacheDir, "/" + zoom + "/" + x
-									+ "/" + y + ".png");
-						} else {
-							new File(tmpDir, "/" + zoom + "/" + x + "/")
-									.mkdirs();
-							tileFile = new File(tmpDir, "/" + zoom + "/" + x
-									+ "/" + y + ".png");
-							if (tileFile.exists()) {
-								tileFile.delete();
-							}
-						}
-						outStream = new FileOutputStream(tileFile);
-						bitmap.compress(outStream);
-
-						path = tileFile.getAbsolutePath();
-						tileFile.setLastModified(System.currentTimeMillis());
-						if (isCacheEnabled()) {
-							currentCacheSize += tileFile.length();
-							checkCacheSize();
-						}
-					} catch (FileNotFoundException e) {
-						Log.e(MapsforgePlugin.TAG, e.getMessage());
-					} catch (IOException e) {
-						Log.e(MapsforgePlugin.TAG, e.getMessage());
-					} finally {
-						if (outStream != null) {
-							try {
-								outStream.close();
-							} catch (IOException e) {
-								Log.e(MapsforgePlugin.TAG, e.getMessage());
-							}
+				try {
+					if (isCacheEnabled()) {
+						new File(cacheDir, "/" + zoom + "/" + x + "/").mkdirs();
+						tileFile = new File(cacheDir, "/" + zoom + "/" + x
+								+ "/" + y + ".png");
+					} else {
+						new File(tmpDir, "/" + zoom + "/" + x + "/").mkdirs();
+						tileFile = new File(tmpDir, "/" + zoom + "/" + x + "/"
+								+ y + ".png");
+						if (tileFile.exists()) {
+							tileFile.delete();
 						}
 					}
+					outStream = new FileOutputStream(tileFile);
+					bitmap.compress(outStream);
 
-				} else {
-					Log.e(MapsforgePlugin.TAG, "Couldn't render tile");
+					path = tileFile.getAbsolutePath();
+					tileFile.setLastModified(System.currentTimeMillis());
+					if (isCacheEnabled()) {
+						currentCacheSize += tileFile.length();
+						checkCacheSize();
+					}
+				} finally {
+					if (outStream != null) {
+						outStream.close();
+					}
 				}
+
+			} else {
+				throw new IOException("Couldn't render tile, x: " + x + ", y: "
+						+ y + ", zoom: " + zoom);
 			}
 
-		} catch (NullPointerException npe) {
-			Log.e(MapsforgePlugin.TAG, npe.getMessage());
 		}
+
 		return path;
 	}
 
@@ -501,52 +488,44 @@ public class MapsforgeCache {
 	}
 
 	// Copies all XML files for the themes to the internal storage
-	private void prepareMapThemes() {
-		List<String> themes = new ArrayList<String>();
-		themes.add("assets.xml");
-		themes.add("assetssvg.xml");
-		themes.add("driving.xml");
-		themes.add("onlybuildings.xml");
-		themes.add("detailed.xml");
-		themes.add("osmarendernopng.xml");
+	private void prepareMapThemes() throws IOException {
+		copyFileOrDirInAssets("renderthemes");
+	}
+	
+	private void copyFileOrDirInAssets(String path) throws IOException {
+		AssetManager assetManager = context.getAssets();
+		String assets[] = null;
+		assets = assetManager.list(path);
+		if (assets.length == 0) {
+			copyFileInAssets(path);
+		} else {
+			String fullPath = this.context.getFilesDir() + "/" + path;
 
-		File directory = new File(this.context.getFilesDir(), "/mapthemes");
-		directory.mkdirs();
-
-		for (String filename : directory.list()) {
-			themes.remove(filename);
-		}
-
-		AssetManager assetManager = this.context.getAssets();
-
-		File file = null;
-		InputStream inStream = null;
-		OutputStream outStream = null;
-
-		for (String filename : themes) {
-			try {
-				file = new File(directory, "/" + filename);
-
-				inStream = assetManager.open("renderthemes/" + filename);
-				outStream = new FileOutputStream(file);
-
-				copyFile(inStream, outStream);
-
-				if (inStream != null) {
-					inStream.close();
-					inStream = null;
-				}
-
-				if (outStream != null) {
-					outStream.flush();
-					outStream.close();
-					outStream = null;
-				}
-			} catch (IOException e) {
-				Log.e(MapsforgePlugin.TAG, "Failed to copy theme: " + filename,
-						e);
+			File dir = new File(fullPath);
+			if (!dir.exists())
+				dir.mkdir();
+			for (int i = 0; i < assets.length; ++i) {
+				copyFileOrDirInAssets(path + "/" + assets[i]);
 			}
 		}
+	}
+	
+	private void copyFileInAssets(String filename) throws IOException {
+		AssetManager assetManager = context.getAssets();
+
+		InputStream in = null;
+		OutputStream out = null;
+		in = assetManager.open(filename);
+		File f = new File(this.context.getFilesDir() + "/" + filename);
+		out = new FileOutputStream(f);
+
+		copyFile(in, out);
+
+		in.close();
+		in = null;
+		out.flush();
+		out.close();
+		out = null;
 	}
 
 	/**
@@ -670,8 +649,10 @@ public class MapsforgeCache {
 	 * 
 	 * @param mapFilePath
 	 *            Absolute file path to the map file
+	 * @throws FileNotFoundException
 	 */
-	public void setMapFilePath(String mapFilePath) {
+	public void setMapFilePath(String mapFilePath)
+			throws IllegalArgumentException, FileNotFoundException {
 		if (mapFilePath != null
 				&& mapFilePath.substring(mapFilePath.length() - 4,
 						mapFilePath.length()).equals(".map")) {
@@ -679,8 +660,7 @@ public class MapsforgeCache {
 
 			mapFile = new File(mapFilePath);
 			if (mapFile == null || !mapFile.exists()) {
-				Log.e(MapsforgePlugin.TAG, "Map file not found.");
-				return;
+				throw new FileNotFoundException("Map file not found.");
 			}
 
 			if (this.mapDatabase.hasOpenFile()) {
@@ -695,7 +675,7 @@ public class MapsforgeCache {
 			renderer = new DatabaseRenderer(this.mapDatabase,
 					this.graphicFactory);
 		} else {
-			Log.e(MapsforgePlugin.TAG,
+			throw new IllegalArgumentException(
 					"Incorrect map file path or incorrect file format (should be .map)");
 		}
 	}
@@ -751,24 +731,23 @@ public class MapsforgeCache {
 	 * 
 	 * @param renderThemePath
 	 *            Absolute path to the theme file
+	 * @throws FileNotFoundException
 	 */
-	public void setRenderTheme(String renderThemePath) {
+	public void setRenderTheme(String renderThemePath)
+			throws IllegalArgumentException, FileNotFoundException {
 		if (renderThemePath != null
 				&& renderThemePath.substring(renderThemePath.length() - 4,
 						renderThemePath.length()).equals(".xml")) {
 
-			try {
-				File newTheme = new File(renderThemePath);
-				if (newTheme.exists()) {
-					this.renderTheme = new ExternalRenderTheme(newTheme);
-				} else {
-					Log.e(MapsforgePlugin.TAG, "Render theme doesn't exist.");
-				}
-			} catch (FileNotFoundException e) {
-				Log.e(MapsforgePlugin.TAG, e.getMessage());
+			File newTheme = new File(renderThemePath);
+			if (newTheme.exists()) {
+				this.renderTheme = new ExternalRenderTheme(newTheme);
+			} else {
+				throw new FileNotFoundException("Render theme doesn't exist.");
 			}
+
 		} else {
-			Log.e(MapsforgePlugin.TAG,
+			throw new IllegalArgumentException(
 					"Incorrect theme file path or incorrect file format (should be .xml)");
 		}
 	}

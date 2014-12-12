@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -69,9 +68,11 @@ public class MapsforgeNative {
 	 * @param height
 	 *            MapView height. Set it to 0 in order to
 	 *            <code>MATCH_PARENT</code>
+	 * @throws IOException
+	 * @throws IllegalArgumentException
 	 */
 	public static void createInstance(Activity context, String mapFilePath,
-			int width, int height) {
+			int width, int height) throws IllegalArgumentException, IOException {
 		INSTANCE = new MapsforgeNative(context, mapFilePath, width, height);
 	}
 
@@ -118,9 +119,11 @@ public class MapsforgeNative {
 	 * @param height
 	 *            Height for the view. If you set this parameter to 0, the
 	 *            height will <code>MATCH_PARENT</code>
+	 * @throws IOException
+	 * @throws IllegalArgumentException
 	 */
 	private MapsforgeNative(Activity context, String mapFilePath, int width,
-			int height) {
+			int height) throws IllegalArgumentException, IOException {
 		setContext(context);
 		setGraphicFactory(AndroidGraphicFactory.INSTANCE);
 		setMapFilePath(mapFilePath);
@@ -128,7 +131,7 @@ public class MapsforgeNative {
 
 		prepareMapThemes();
 
-		setRenderThemePath(this.context.getFilesDir() + "/mapthemes/assets.xml");
+		setRenderThemePath(this.context.getFilesDir() + "/renderthemes/assets.xml");
 
 		destroyCache = true;
 
@@ -379,52 +382,44 @@ public class MapsforgeNative {
 	}
 
 	// Copies the render themes from the application to the internal memory
-	private void prepareMapThemes() {
-		List<String> themes = new ArrayList<String>();
-		themes.add("assets.xml");
-		themes.add("assetssvg.xml");
-		themes.add("driving.xml");
-		themes.add("onlybuildings.xml");
-		themes.add("detailed.xml");
-		themes.add("osmarendernopng.xml");
+	private void prepareMapThemes() throws IOException {
+		copyFileOrDirInAssets("renderthemes");
+	}
+	
+	private void copyFileOrDirInAssets(String path) throws IOException {
+		AssetManager assetManager = context.getAssets();
+		String assets[] = null;
+		assets = assetManager.list(path);
+		if (assets.length == 0) {
+			copyFileInAssets(path);
+		} else {
+			String fullPath = this.context.getFilesDir() + "/" + path;
 
-		File directory = new File(this.context.getFilesDir(), "/mapthemes");
-		directory.mkdirs();
-
-		for (String filename : directory.list()) {
-			themes.remove(filename);
-		}
-
-		AssetManager assetManager = this.context.getAssets();
-
-		File file = null;
-		InputStream inStream = null;
-		OutputStream outStream = null;
-
-		for (String filename : themes) {
-			try {
-				file = new File(directory, "/" + filename);
-
-				inStream = assetManager.open("renderthemes/" + filename);
-				outStream = new FileOutputStream(file);
-
-				copyFile(inStream, outStream);
-
-				if (inStream != null) {
-					inStream.close();
-					inStream = null;
-				}
-
-				if (outStream != null) {
-					outStream.flush();
-					outStream.close();
-					outStream = null;
-				}
-			} catch (IOException e) {
-				Log.e(MapsforgePlugin.TAG, "Failed to copy theme: " + filename,
-						e);
+			File dir = new File(fullPath);
+			if (!dir.exists())
+				dir.mkdir();
+			for (int i = 0; i < assets.length; ++i) {
+				copyFileOrDirInAssets(path + "/" + assets[i]);
 			}
 		}
+	}
+	
+	private void copyFileInAssets(String filename) throws IOException {
+		AssetManager assetManager = context.getAssets();
+
+		InputStream in = null;
+		OutputStream out = null;
+		in = assetManager.open(filename);
+		File f = new File(this.context.getFilesDir() + "/" + filename);
+		out = new FileOutputStream(f);
+
+		copyFile(in, out);
+
+		in.close();
+		in = null;
+		out.flush();
+		out.close();
+		out = null;
 	}
 
 	/**
@@ -523,8 +518,10 @@ public class MapsforgeNative {
 	 * @param mapFilePath
 	 *            Absolute path to the map file. This file must have <i>map</i>
 	 *            extension.
+	 * @throws FileNotFoundException
 	 */
-	public void setMapFilePath(String mapFilePath) {
+	public void setMapFilePath(String mapFilePath)
+			throws IllegalArgumentException, FileNotFoundException {
 		if (mapFilePath != null
 				&& mapFilePath.substring(mapFilePath.length() - 4,
 						mapFilePath.length()).equals(".map")) {
@@ -532,15 +529,14 @@ public class MapsforgeNative {
 
 			mapFile = new File(mapFilePath);
 			if (mapFile == null || !mapFile.exists()) {
-				Log.e(MapsforgePlugin.TAG, "Map file not found.");
-				return;
+				throw new FileNotFoundException("Map file not found.");
 			}
 
 			if (tileRendererLayer != null) {
 				tileRendererLayer.setMapFile(mapFile);
 			}
 		} else {
-			Log.e(MapsforgePlugin.TAG,
+			throw new IllegalArgumentException(
 					"Incorrect map file path or incorrect file format (should be .map)");
 		}
 	}
@@ -577,8 +573,11 @@ public class MapsforgeNative {
 	 *            Absolute path to the theme file that will be used. If
 	 *            <code>null</code> is passed, the default theme will be
 	 *            applied.
+	 * @throws IOException
+	 * @throws IllegalArgumentException
 	 */
-	public void setOffline(String mapFilePath, String renderThemePath) {
+	public void setOffline(String mapFilePath, String renderThemePath)
+			throws IllegalArgumentException, IOException {
 		setMapFilePath(mapFilePath);
 		setRenderThemePath(renderThemePath);
 
@@ -635,41 +634,39 @@ public class MapsforgeNative {
 	 * 
 	 * @param renderThemePath
 	 *            Absolute path to the theme file.
+	 * @throws IOException
 	 */
-	public void setRenderThemePath(String renderThemePath) {
+	public void setRenderThemePath(String renderThemePath) throws IOException,
+			IllegalArgumentException {
 		if (renderThemePath != null
 				&& renderThemePath.substring(renderThemePath.length() - 4,
 						renderThemePath.length()).equals(".xml")) {
 
-			try {
-				File newTheme = new File(renderThemePath);
-				if (newTheme.exists()) {
-					this.renderThemePath = renderThemePath;
-					this.renderTheme = new ExternalRenderTheme(newTheme);
-				} else {
-					prepareMapThemes();
-					this.renderThemePath = this.context.getFilesDir()
-							+ "/mapthemes/assets.xml";
-					newTheme = new File(renderThemePath);
-					this.renderTheme = new ExternalRenderTheme(newTheme);
+			File newTheme = new File(renderThemePath);
+			if (newTheme.exists()) {
+				this.renderThemePath = renderThemePath;
+				this.renderTheme = new ExternalRenderTheme(newTheme);
+			} else {
+				prepareMapThemes();
+				this.renderThemePath = this.context.getFilesDir()
+						+ "/renderthemes/assets.xml";
+				newTheme = new File(renderThemePath);
+				this.renderTheme = new ExternalRenderTheme(newTheme);
 
-					Log.e(MapsforgePlugin.TAG,
-							"Render theme doesn't exist. Default theme applied.");
-				}
-			} catch (FileNotFoundException e) {
-				Log.e(MapsforgePlugin.TAG, e.getMessage());
+				Log.w(MapsforgePlugin.TAG,
+						"Render theme doesn't exist. Default theme applied.");
 			}
 
 			if (tileRendererLayer != null) {
 				if (renderTheme == null) {
-					Log.e(MapsforgePlugin.TAG,
+					throw new IllegalArgumentException(
 							"Render theme is null, cannot asign it to the renderer layer.");
 				} else {
 					tileRendererLayer.setXmlRenderTheme(renderTheme);
 				}
 			}
 		} else {
-			Log.e(MapsforgePlugin.TAG,
+			throw new IllegalArgumentException(
 					"Incorrect theme file path or incorrect file format (should be .xml)");
 		}
 	}

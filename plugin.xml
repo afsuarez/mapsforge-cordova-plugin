@@ -1,7 +1,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
 xmlns:android="http://schemas.android.com/apk/res/android"
 id="com.suarez.cordova.mapsforge"
-    version="0.1">
+    version="0.1.1">
 
     <name>Mapsforge Plugin</name>
     <description>Cordova plugin that allows you to use mapsforge as an offline renderer to use with other libraries(like Leaflet), or to use it directly in your device in a native way(offline and online modes available).</description>

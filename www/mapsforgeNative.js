@@ -22,114 +22,92 @@ mapsforge_native.prototype = {
 		MARKER_BLACK: "marker_black",
 		MARKER_WHITE: "marker_white",
 		
-		addMarker: function(params, callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-marker", params);
+		addMarker: function(params, success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-marker", params);
 		},
 		
-		addPolyline: function(params, callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-polyline", params);
+		addPolyline: function(params, success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-polyline", params);
 		},
 
-		deleteLayer: function(key, callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-delete-layer", [key]);
+		deleteLayer: function(key, success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-delete-layer", [key]);
 		},
 
-		destroyCacheOnExit: function(destroyCache, callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-destroy-cache", [destroyCache]);
+		destroyCacheOnExit: function(destroyCache, success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-destroy-cache", [destroyCache]);
 		},
 		
-		hide : function(callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-hide", []);
+		hide : function(success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-hide", []);
 		},
 		
-		initialize : function(params, callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-initialize", params);
+		initialize : function(params, success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-initialize", params);
 		},
 
-		onDestroy: function(callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-destroy", []);
+		onDestroy: function(success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-destroy", []);
 		},
 
-		onStart: function(callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-start", []);
+		onStart: function(success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-start", []);
 		},
 		
-		onStop: function(callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-stop", []);
+		onStop: function(success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-stop", []);
 		},
 		
-		setCacheName: function(cacheName, callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-cache-name", [cacheName]);
+		setCacheName: function(cacheName, success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-cache-name", [cacheName]);
 		},
 		
-		setCenter: function(lat, lng, callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-set-center", [lat,lng]);
+		setCenter: function(lat, lng, success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-set-center", [lat,lng]);
 		},
 
-		setClickable: function(viewClickable, callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-clickable", [viewClickable]);
+		setClickable: function(viewClickable, success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-clickable", [viewClickable]);
 		},
 
-		setMapFile: function(absoluteMapFilePath, callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-map-path", [absoluteMapFilePath]);
+		setMapFile: function(absoluteMapFilePath, success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-map-path", [absoluteMapFilePath]);
 		},
 		
-		setMaxZoom: function(maxZoom, callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-set-max-zoom", [maxZoom]);
+		setMaxZoom: function(maxZoom, success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-set-max-zoom", [maxZoom]);
 		},
 
-		setMinZoom: function(minZoom, callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-set-min-zoom", [minZoom]);
+		setMinZoom: function(minZoom, success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-set-min-zoom", [minZoom]);
 		},
 
-		setOfflineTileLayer: function(params, callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-offline", params);
+		setOfflineTileLayer: function(params, success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-offline", params);
 		},
 		
-		setOnlineTileLayer: function(params, callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-online", params);
+		setOnlineTileLayer: function(params, success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-online", params);
 		},
 		
-		setThemePath: function(themePath, callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-theme-path", [themePath]);
+		setThemePath: function(themePath, success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-theme-path", [themePath]);
 		},
 		
-		setZoom: function(zoomLevel, callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-set-zoom", [zoomLevel]);
+		setZoom: function(zoomLevel, success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-set-zoom", [zoomLevel]);
 		},
 	
-		show : function(callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-show", []);
+		show : function(success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-show", []);
 		},
 		
-		showBuiltInControls: function(showControls, callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-show-controls", [showControls]);
+		showBuiltInControls: function(showControls, success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-show-controls", [showControls]);
 		},
 		
-		showScaleBar: function(showScaleBar, callbacks){
-			var callbacks = callbacks || {};
-			exec(callbacks.onSuccess || this.doNothing, callbacks.onError || this.doNothing, "MapsforgePlugin", "native-show-scale", [showScaleBar]);
+		showScaleBar: function(showScaleBar, success, error){
+			exec(success || this.doNothing, error || this.doNothing, "MapsforgePlugin", "native-show-scale", [showScaleBar]);
 		}
 };
 
