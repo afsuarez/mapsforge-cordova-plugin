@@ -739,16 +739,19 @@ public class MapsforgeCache {
 				&& renderThemePath.substring(renderThemePath.length() - 4,
 						renderThemePath.length()).equals(".xml")) {
 
+			if(!renderThemePath.contains("/")) 
+				renderThemePath = this.context.getFilesDir() + "/renderthemes/"+renderThemePath;
+			
 			File newTheme = new File(renderThemePath);
 			if (newTheme.exists()) {
 				this.renderTheme = new ExternalRenderTheme(newTheme);
 			} else {
-				throw new FileNotFoundException("Render theme doesn't exist.");
+				throw new FileNotFoundException("Render theme doesn't exist: "+ renderThemePath);
 			}
 
 		} else {
 			throw new IllegalArgumentException(
-					"Incorrect theme file path or incorrect file format (should be .xml)");
+					"Incorrect theme file path ("+renderThemePath+") or incorrect file format (should be .xml)");
 		}
 	}
 
