@@ -20,8 +20,6 @@ Overview
 
 This plugin is available for Android(Amazon and FireOS as well) and allows you to use mapsforge in two modes: native, and as an offline tile layer (for use with other libraries like Leaflet).
 
-Currently the wiki is under construction, so the main methods will be shown below as a quick usage guide, and if you need additional information you can contact me.
-
 All the necessary libraries are imported with the plugin automatically.
 
 Installation
