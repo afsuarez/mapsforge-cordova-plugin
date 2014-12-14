@@ -200,6 +200,9 @@ map.setView([43.360594,-5.849361],18);
 
 Examples
 ========
+
+* Important: You can find a better example here: https://github.com/robotnic/mapsforge-cordova-plugin-example
+
 Mapsforge Native
 ----------------
 ```javascript
