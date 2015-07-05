@@ -38,11 +38,11 @@ id="com.suarez.cordova.mapsforge"
         <source-file src="src/android/libs/mapsforge-map-reader-0.4.0.jar" target-dir="libs" />
         <source-file src="src/android/libs/svg-android-0.4.0.jar" target-dir="libs" />
         
-        <asset src="src/android/assets/patterns" target="../patterns" />
-        <asset src="src/android/assets/renderthemes" target="../renderthemes" />
-        <asset src="src/android/assets/symbols" target="../symbols" />
+        <source-file src="src/android/assets/patterns/*" target="assets/patterns" />
+        <source-file src="src/android/assets/renderthemes/*" target="assets/renderthemes" />
+        <source-file src="src/android/assets/symbols/*" target="assets/symbols" />
         
-        <asset src="src/android/res/drawable" target="../../res/drawable" />
+        <source-file src="src/android/res/drawable/*" target="res/drawable" />
 	</platform>
     
     <!-- android -->
@@ -63,10 +63,10 @@ id="com.suarez.cordova.mapsforge"
         <source-file src="src/android/libs/mapsforge-map-reader-0.4.0.jar" target-dir="libs" />
         <source-file src="src/android/libs/svg-android-0.4.0.jar" target-dir="libs" />
         
-        <asset src="src/android/assets/patterns" target="../patterns" />
-        <asset src="src/android/assets/renderthemes" target="../renderthemes" />
-        <asset src="src/android/assets/symbols" target="../symbols" />
+        <source-file src="src/android/assets/patterns/*" target="assets/patterns" />
+        <source-file src="src/android/assets/renderthemes/*" target="assets/renderthemes" />
+        <source-file src="src/android/assets/symbols/*" target="assets/symbols" />
         
-        <asset src="src/android/res/drawable" target="../../res/drawable" />
+        <source-file src="src/android/res/drawable/*" target="res/drawable" />
      </platform>
 </plugin>
