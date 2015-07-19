@@ -38,12 +38,17 @@ id="com.suarez.cordova.mapsforge"
         <source-file src="src/android/libs/mapsforge-map-reader-0.4.0.jar" target-dir="libs" />
         <source-file src="src/android/libs/svg-android-0.4.0.jar" target-dir="libs" />
         
-        <asset src="src/android/assets/patterns" target="patterns" />
-        <asset src="src/android/assets/renderthemes" target="renderthemes" />
-        <asset src="src/android/assets/symbols" target="symbols" />
+        <source-file src="src/android/assets/patterns" target-dir="assets" />
+        <source-file src="src/android/assets/renderthemes" target-dir="assets" />
+        <source-file src="src/android/assets/symbols" target-dir="assets" />
         
-        <asset src="src/android/res/drawable" target="res/drawable" />
-	</platform>
+        <source-file src="src/android/res/drawable/marker_black.png" target-dir="res/drawable" />
+	<source-file src="src/android/res/drawable/marker_blue.png" target-dir="res/drawable" />
+	<source-file src="src/android/res/drawable/marker_green.png" target-dir="res/drawable" />
+	<source-file src="src/android/res/drawable/marker_red.png" target-dir="res/drawable" />
+	<source-file src="src/android/res/drawable/marker_yellow.png" target-dir="res/drawable" />
+	<source-file src="src/android/res/drawable/marker_white.png" target-dir="res/drawable" />
+    </platform>
     
     <!-- android -->
     <platform name="android">
@@ -63,10 +68,15 @@ id="com.suarez.cordova.mapsforge"
         <source-file src="src/android/libs/mapsforge-map-reader-0.4.0.jar" target-dir="libs" />
         <source-file src="src/android/libs/svg-android-0.4.0.jar" target-dir="libs" />
         
-        <asset src="src/android/assets/patterns" target="patterns" />
-        <asset src="src/android/assets/renderthemes" target="renderthemes" />
-        <asset src="src/android/assets/symbols" target="symbols" />
+        <source-file src="src/android/assets/patterns" target-dir="assets" />
+        <source-file src="src/android/assets/renderthemes" target-dir="assets" />
+        <source-file src="src/android/assets/symbols" target-dir="assets" />
         
-        <asset src="src/android/res/drawable" target="res/drawable" />
-     </platform>
+        <source-file src="src/android/res/drawable/marker_black.png" target-dir="res/drawable" />
+	<source-file src="src/android/res/drawable/marker_blue.png" target-dir="res/drawable" />
+	<source-file src="src/android/res/drawable/marker_green.png" target-dir="res/drawable" />
+	<source-file src="src/android/res/drawable/marker_red.png" target-dir="res/drawable" />
+	<source-file src="src/android/res/drawable/marker_yellow.png" target-dir="res/drawable" />
+	<source-file src="src/android/res/drawable/marker_white.png" target-dir="res/drawable" />
+    </platform>
 </plugin>
