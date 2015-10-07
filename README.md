@@ -2,6 +2,7 @@ mapsforge-cordova-plugin
 ========================
 
 Plugin for Apache Cordova (aka Phonegap) that wraps the [mapsforge](http://www.mapsforge.org) libraries(v 0.4).
+:warning:Discontinued:warning: For now this project is no longer supported. Feel free to use it as a base for any further development.
 
 Index
 =====
