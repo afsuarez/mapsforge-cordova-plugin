@@ -2,7 +2,10 @@ mapsforge-cordova-plugin
 ========================
 
 Plugin for Apache Cordova (aka Phonegap) that wraps the [mapsforge](http://www.mapsforge.org) libraries(v 0.4).
-:warning:Discontinued:warning: For now this project is no longer supported. Feel free to use it as a base for any further development.
+
+:warning:Discontinued:warning:
+
+For now this project is no longer supported. Feel free to use it as a base for any further development.
 
 Index
 =====
@@ -15,6 +18,7 @@ Index
 6. [Contribute](#contribute)
 7. [License](#license)
 8. [Javadoc](http://afsuarez.github.io/mapsforge-cordova-plugin/doc/)
+9. [Ionic framework or emulator based on web browser](#ionic-framework-or-emulator-based-on-web-browser)
 
 Overview
 ========
@@ -246,3 +250,8 @@ Feel free to contribute, add issues about bringing more features to the plugin, 
 License
 =======
 MIT license
+
+Ionic framework or emulator based on web browser
+===============================================
+
+Check out this [issue](https://github.com/afsuarez/mapsforge-cordova-plugin/issues/11) by [egofree71](https://github.com/egofree71). It may be helpful.
